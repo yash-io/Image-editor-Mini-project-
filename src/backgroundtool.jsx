@@ -33,7 +33,7 @@ const RemoveBackground=() =>{
 };
 
   return (
-    <div className='flex justify-center text-white min-h-screen border-2 bg-gray-900 border-blue-400 border-t-0 rounded-md '>
+    <div className='flex justify-center text-white min-h-screen border-2 bg-gray-700 border-blue-400 border-t-0 rounded-md '>
     <div className="container mx-auto  p-8   ">
       <div className="mb-4 pt-2 border-2 border-white bg-gray-300 rounded-md">
       <h1 className="text-2xl font-bold mb-6 text-center text-red-700 ">Image Background Remover</h1>
