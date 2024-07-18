@@ -6,7 +6,7 @@ const Navbar = ({ isMenuOpen, toggleMenu, toggle_cmp , toggle_bg ,toggleHome,tog
   const commonClasses = "xs:w-[25%] xxs:w-[50%] hover:text-white  hover:bg-red-800 transition duration-300 ease-in-out py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded-md text-center";
 
   return (
-    <div className="bg-black border-2 border-orange-700  sticky top-0 rounded-md  w-full z-50 shadow-lg">
+    <div className="bg-black  sticky top-0 rounded-md  w-full z-50 shadow-lg">
       <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="text-2xl font-bold text-white">IMAGE TOOL KIT</div>
         <button
