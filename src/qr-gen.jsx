@@ -24,7 +24,7 @@ const QR_GEN = () => {
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen flex flex-col items-center  p-4">
+    <div className="bg-gray-600 min-h-screen flex flex-col items-center  p-4">
       <h1 className="text-white text-4xl mb-6 animate-pulse">QR-CODE GENERATOR</h1>
       <form onSubmit={handleSubmit} className="w-full max-w-md">
         <h2 className="text-white text-xl mb-4">ENTER YOUR TEXT HERE:</h2>
