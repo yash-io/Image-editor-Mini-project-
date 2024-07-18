@@ -69,7 +69,7 @@ const Component_pdf = () => {
     };
 
     return (
-        <div className="bg-gray-900 text-white min-h-screen flex flex-col items-center">
+        <div className="bg-gray-600 text-white min-h-screen flex flex-col items-center">
             <nav className=" w-11/12 bg-gray-800 p-4 flex mt-8 mx-2  justify-between items-center rounded-md">
                 <div className="flex items-center">
                     <span className="text-xl font-bold">Image to PDF Converter</span>
