@@ -5,7 +5,7 @@ const RemoveBackground=() =>{
   const [bgRemove, setBgRemove] = useState(null);
 
   const handleRemoveBackground = async () => {
-    const apiKey = "njv7RHG7MqkW3iqVX9wgPLxm";
+    const apiKey = "3HTCZrhLjjrLKjrSqTWgE4cy";
     const apiUrl = "https://api.remove.bg/v1.0/removebg";
 
     const formData = new FormData();
