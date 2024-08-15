@@ -12,7 +12,24 @@ const QR_GEN = () => {
 
   const downloadQRCode = () => {
     const qrCanvas = document.getElementById('qrCode');
-    const pngUrl = qrCanvas
+    const qrCodeSize = qrCanvas.width;
+    const padding = 20; // Add padding around the QR code
+
+   
+    const offscreenCanvas = document.createElement('canvas');
+    offscreenCanvas.width = qrCodeSize + padding * 2;
+    offscreenCanvas.height = qrCodeSize + padding * 2;
+    const offscreenContext = offscreenCanvas.getContext('2d');
+
+    // Fill the canvas with a white background
+    offscreenContext.fillStyle = '#FFFFFF';
+    offscreenContext.fillRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+
+    // Draw the QR code onto the canvas with padding
+    offscreenContext.drawImage(qrCanvas, padding, padding);
+
+    // Convert the offscreen canvas to a data URL and download it
+    const pngUrl = offscreenCanvas
       .toDataURL('image/png')
       .replace('image/png', 'image/octet-stream');
     let downloadLink = document.createElement('a');
@@ -24,7 +41,7 @@ const QR_GEN = () => {
   };
 
   return (
-    <div className="bg-gray-600 min-h-screen flex flex-col items-center  p-4">
+    <div className="bg-gray-600 min-h-screen flex flex-col items-center p-4">
       <h1 className="text-white text-4xl mb-6 animate-pulse">QR-CODE GENERATOR</h1>
       <form onSubmit={handleSubmit} className="w-full max-w-md">
         <h2 className="text-white text-xl mb-4">ENTER YOUR TEXT HERE:</h2>
@@ -46,9 +63,14 @@ const QR_GEN = () => {
         </button>
       </form>
       <div id="displayqr" className="mt-4">
-      {generatedQR && (
+        {generatedQR && (
           <div className="mt-4 p-4 bg-white rounded-lg">
-            <QRCode id="qrCode" value={generatedQR} size={256} className="p-2 border-2 border-black bg-orange-200 rounded-md" />
+            <QRCode
+              id="qrCode"
+              value={generatedQR}
+              size={256}
+              className="p-2 border-2 border-black bg-orange-200 rounded-md"
+            />
             <br />
             <button
               id="download-btn"
