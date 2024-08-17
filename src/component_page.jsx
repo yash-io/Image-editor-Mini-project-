@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import jsPDF from 'jspdf';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-
+//added dnd
 const Component_pdf = () => {
     const [images, setImages] = useState([]);
 
