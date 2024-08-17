@@ -50,13 +50,22 @@ const Img_compress = () => {
   };
 
   const calculateImageSize = (dataUrl) => {
-    // Calculate the size of the image in bytes from the base64 string
+    // Calculate the size of the image in bytes 
     const head = 'data:image/jpeg;base64,';
     return dataUrl.length * (3 / 4) - head.length;
   };
 
   const reset = () => {
-    window.location.reload(); 
+    setBrightnessValue(100);
+    setSaturationValue(100);
+    setHueRotateValue(0);
+    setGrayscaleActive(false);
+    setQualityLevel('high');
+    setPreviewImageUrl(''); 
+    setOriginalImageSize(0);
+    setDownloadUrl(''); 
+    setCompressedImageSize(0);
+    setFileInputKey(Date.now()); 
   };
 
   useEffect(() => {
