@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const Component_pdf = () => {
     const [images, setImages] = useState([]);
-    const [quality, setQuality] = useState('medium'); // Step 1: Add state for quality
+    const [quality, setQuality] = useState('medium');
+    const [estimatedPdfSize, setEstimatedPdfSize] = useState(0);
 
     const handleImageUpload = (event) => {
         const files = event.target.files;
@@ -17,6 +18,7 @@ const Component_pdf = () => {
                     id: `image-${Date.now()}-${i}`,
                     data: reader.result,
                     name: file.name,
+                    size: file.size
                 });
                 if (newImages.length === files.length) {
                     setImages(prevImages => [...prevImages, ...newImages]);
@@ -38,6 +40,7 @@ const Component_pdf = () => {
                     id: `image-${Date.now()}-${i}`,
                     data: reader.result,
                     name: file.name,
+                    size: file.size
                 });
                 if (newImages.length === files.length) {
                     setImages(prevImages => [...prevImages, ...newImages]);
@@ -65,33 +68,56 @@ const Component_pdf = () => {
         setImages(reorderedImages);
     };
 
-    const generatePDF = () => {
-    const doc = new jsPDF();
-    let qualitySetting;
-
-    switch (quality) {
-        case 'low':
-            qualitySetting = 0.1;
-            break;
-        case 'medium':
-            qualitySetting = 0.5;
-            break;
-        case 'high':
-            qualitySetting = 1.0;
-            break;
-        default:
-            qualitySetting = 0.5;
-    }
-
-    images.forEach((image, index) => {
-        if (index > 0) {
-            doc.addPage();
+    const calculateEstimatedPdfSize = () => {
+        let qualityMultiplier;
+        switch (quality) {
+            case 'low':
+                qualityMultiplier = 0.1;
+                break;
+            case 'medium':
+                qualityMultiplier = 0.5;
+                break;
+            case 'high':
+                qualityMultiplier = 1.0;
+                break;
+            default:
+                qualityMultiplier = 0.5;
         }
-        doc.text(image.name, 10, 10);
-        doc.addImage(image.data, 'JPEG', 10, 20, 180, 160, undefined, undefined, qualitySetting);
-    });
-    doc.save('converted_images.pdf');
-};
+        const totalSize = images.reduce((total, image) => total + (image.size * qualityMultiplier), 0);
+        setEstimatedPdfSize((totalSize / 1024).toFixed(2)); // Convert to KB
+    };
+
+    useEffect(() => {
+        calculateEstimatedPdfSize();
+    }, [images, quality]);
+
+    const generatePDF = () => {
+        const doc = new jsPDF();
+        let qualitySetting;
+
+        switch (quality) {
+            case 'low':
+                qualitySetting = 0.1;
+                break;
+            case 'medium':
+                qualitySetting = 0.5;
+                break;
+            case 'high':
+                qualitySetting = 1.0;
+                break;
+            default:
+                qualitySetting = 0.5;
+        }
+
+        images.forEach((image, index) => {
+            if (index > 0) {
+                doc.addPage();
+            }
+            doc.text(image.name, 10, 10);
+            doc.addImage(image.data, 'JPEG', 10, 20, 180, 160, undefined, undefined, qualitySetting);
+        });
+        doc.save('converted_images.pdf');
+    };
 
     const refresh = () => {
         window.location.reload();
@@ -115,11 +141,20 @@ const Component_pdf = () => {
                     className="hidden"
                 />
             </nav>
-            <div
-                className="w-11/12 md:w-3/4 lg:w-1/2 bg-gray-800 rounded-lg p-6 mt-6"
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-            >
+            <div className="w-11/12 md:w-3/4 lg:w-1/2 bg-gray-800 rounded-lg p-6 mt-6">
+                <div className="flex flex-col items-center mb-4">
+                    <label htmlFor="quality" className="mb-2 text-white">Select Image Quality:</label>
+                    <select
+                        id="quality"
+                        value={quality}
+                        onChange={(e) => setQuality(e.target.value)}
+                        className="mb-4 p-2 rounded bg-gray-700 text-white"
+                    >
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
                 {images.length === 0 ? (
                     <div className="border-4 border-dashed border-gray-600 rounded-lg p-10 text-center text-gray-400">
                         Drag and drop images here or click to upload
@@ -161,17 +196,9 @@ const Component_pdf = () => {
                 )}
                 {images.length > 0 && (
                     <div className="mt-4 flex flex-col items-center">
-                        <label htmlFor="quality" className="mb-2 text-white">Select Image Quality:</label>
-                        <select
-                            id="quality"
-                            value={quality}
-                            onChange={(e) => setQuality(e.target.value)}
-                            className="mb-4 p-2 rounded bg-gray-700 text-white"
-                        >
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">High</option>
-                        </select>
+                        <div className="mb-4 text-white">
+                            Estimated PDF Size: {estimatedPdfSize} KB
+                        </div>
                         <button
                             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                             onClick={generatePDF}
