@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import jsPDF from 'jspdf';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-//added dnd
+
 const Component_pdf = () => {
     const [images, setImages] = useState([]);
+    const [quality, setQuality] = useState('medium'); // Step 1: Add state for quality
 
     const handleImageUpload = (event) => {
         const files = event.target.files;
@@ -66,12 +67,28 @@ const Component_pdf = () => {
 
     const generatePDF = () => {
         const doc = new jsPDF();
+        let qualitySetting;
+
+        switch (quality) {
+            case 'low':
+                qualitySetting = 0.1;
+                break;
+            case 'medium':
+                qualitySetting = 0.5;
+                break;
+            case 'high':
+                qualitySetting = 1.0;
+                break;
+            default:
+                qualitySetting = 0.5;
+        }
+
         images.forEach((image, index) => {
             if (index > 0) {
                 doc.addPage();
             }
             doc.text(image.name, 10, 10);
-            doc.addImage(image.data, 'JPEG', 10, 20, 180, 160);
+            doc.addImage(image.data, 'JPEG', 10, 20, 180, 160, undefined, qualitySetting);
         });
         doc.save('converted_images.pdf');
     };
@@ -143,12 +160,25 @@ const Component_pdf = () => {
                     </DragDropContext>
                 )}
                 {images.length > 0 && (
-                    <button
-                        className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={generatePDF}
-                    >
-                        Convert to PDF
-                    </button>
+                    <div className="mt-4 flex flex-col items-center">
+                        <label htmlFor="quality" className="mb-2 text-white">Select Image Quality:</label>
+                        <select
+                            id="quality"
+                            value={quality}
+                            onChange={(e) => setQuality(e.target.value)}
+                            className="mb-4 p-2 rounded bg-gray-700 text-white"
+                        >
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                        <button
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={generatePDF}
+                        >
+                            Convert to PDF
+                        </button>
+                    </div>
                 )}
             </div>
             <button className="sticky mt-8 bg-green-500 p-2 rounded-md" onClick={refresh}>
