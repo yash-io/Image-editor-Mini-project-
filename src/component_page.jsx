@@ -69,19 +69,22 @@ const Component_pdf = () => {
     };
 
     const resizeImage = (dataURL, qualitySetting) => {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.src = dataURL;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = img.width * qualitySetting;
-                canvas.height = img.height * qualitySetting;
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                resolve(canvas.toDataURL('image/jpeg', qualitySetting));
-            };
-        });
-    };
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.src = dataURL;
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            // Adjust canvas size based on quality setting
+            canvas.width = img.width * qualitySetting;
+            canvas.height = img.height * qualitySetting;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            // Use a lower quality setting for JPEG compression
+            const compressedDataURL = canvas.toDataURL('image/jpeg', qualitySetting);
+            resolve(compressedDataURL);
+        };
+    });
+};
 
     const calculateEstimatedPdfSize = () => {
         let qualityMultiplier;
