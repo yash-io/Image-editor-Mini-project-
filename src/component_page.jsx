@@ -66,32 +66,32 @@ const Component_pdf = () => {
     };
 
     const generatePDF = () => {
-        const doc = new jsPDF();
-        let qualitySetting;
+    const doc = new jsPDF();
+    let qualitySetting;
 
-        switch (quality) {
-            case 'low':
-                qualitySetting = 0.1;
-                break;
-            case 'medium':
-                qualitySetting = 0.5;
-                break;
-            case 'high':
-                qualitySetting = 1.0;
-                break;
-            default:
-                qualitySetting = 0.5;
+    switch (quality) {
+        case 'low':
+            qualitySetting = 0.1;
+            break;
+        case 'medium':
+            qualitySetting = 0.5;
+            break;
+        case 'high':
+            qualitySetting = 1.0;
+            break;
+        default:
+            qualitySetting = 0.5;
+    }
+
+    images.forEach((image, index) => {
+        if (index > 0) {
+            doc.addPage();
         }
-
-        images.forEach((image, index) => {
-            if (index > 0) {
-                doc.addPage();
-            }
-            doc.text(image.name, 10, 10);
-            doc.addImage(image.data, 'JPEG', 10, 20, 180, 160, undefined, qualitySetting);
-        });
-        doc.save('converted_images.pdf');
-    };
+        doc.text(image.name, 10, 10);
+        doc.addImage(image.data, 'JPEG', 10, 20, 180, 160, undefined, 'FAST', qualitySetting);
+    });
+    doc.save('converted_images.pdf');
+};
 
     const refresh = () => {
         window.location.reload();
