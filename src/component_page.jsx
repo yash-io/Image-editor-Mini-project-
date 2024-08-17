@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import jsPDF from 'jspdf';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const Component_pdf = () => {
     const [images, setImages] = useState([]);
@@ -12,6 +13,7 @@ const Component_pdf = () => {
             const reader = new FileReader();
             reader.onload = () => {
                 newImages.push({
+                    id: `image-${Date.now()}-${i}`,
                     data: reader.result,
                     name: file.name,
                 });
@@ -32,6 +34,7 @@ const Component_pdf = () => {
             const reader = new FileReader();
             reader.onload = () => {
                 newImages.push({
+                    id: `image-${Date.now()}-${i}`,
                     data: reader.result,
                     name: file.name,
                 });
@@ -53,6 +56,14 @@ const Component_pdf = () => {
         setImages(updatedImages);
     };
 
+    const onDragEnd = (result) => {
+        if (!result.destination) return;
+        const reorderedImages = Array.from(images);
+        const [removed] = reorderedImages.splice(result.source.index, 1);
+        reorderedImages.splice(result.destination.index, 0, removed);
+        setImages(reorderedImages);
+    };
+
     const generatePDF = () => {
         const doc = new jsPDF();
         images.forEach((image, index) => {
@@ -64,13 +75,14 @@ const Component_pdf = () => {
         });
         doc.save('converted_images.pdf');
     };
-    const refresh = () =>{
-        window.location.reload()
+
+    const refresh = () => {
+        window.location.reload();
     };
 
     return (
         <div className="bg-gray-600 text-white min-h-screen flex flex-col items-center">
-            <nav className=" w-11/12 bg-gray-800 p-4 flex mt-8 mx-2  justify-between items-center rounded-md">
+            <nav className="w-11/12 bg-gray-800 p-4 flex mt-8 mx-2 justify-between items-center rounded-md">
                 <div className="flex items-center">
                     <span className="text-xl font-bold">Image to PDF Converter</span>
                 </div>
@@ -83,7 +95,7 @@ const Component_pdf = () => {
                     accept="image/*"
                     multiple
                     onChange={handleImageUpload}
-                    className="hidden "
+                    className="hidden"
                 />
             </nav>
             <div
@@ -96,19 +108,39 @@ const Component_pdf = () => {
                         Drag and drop images here or click to upload
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {images.map((image, index) => (
-                            <div key={index} className="relative">
-                                <img src={image.data} alt={image.name} className="rounded-lg mb-2" />
-                                <button
-                                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                                    onClick={() => handleDelete(index)}
+                    <DragDropContext onDragEnd={onDragEnd}>
+                        <Droppable droppableId="images">
+                            {(provided) => (
+                                <div
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
+                                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
                                 >
-                                    Delete
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+                                    {images.map((image, index) => (
+                                        <Draggable key={image.id} draggableId={image.id} index={index}>
+                                            {(provided) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    className="relative"
+                                                >
+                                                    <img src={image.data} alt={image.name} className="rounded-lg mb-2" />
+                                                    <button
+                                                        className="absolute top-2 right-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                                                        onClick={() => handleDelete(index)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
+                                </div>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
                 )}
                 {images.length > 0 && (
                     <button
@@ -117,8 +149,6 @@ const Component_pdf = () => {
                     >
                         Convert to PDF
                     </button>
-
-                    
                 )}
             </div>
             <button className="sticky mt-8 bg-green-500 p-2 rounded-md" onClick={refresh}>
