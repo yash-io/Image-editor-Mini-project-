@@ -68,6 +68,21 @@ const Component_pdf = () => {
         setImages(reorderedImages);
     };
 
+    const resizeImage = (dataURL, qualitySetting) => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.src = dataURL;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width * qualitySetting;
+                canvas.height = img.height * qualitySetting;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                resolve(canvas.toDataURL());
+            };
+        });
+    };
+
     const calculateEstimatedPdfSize = () => {
         let qualityMultiplier;
         switch (quality) {
@@ -91,35 +106,36 @@ const Component_pdf = () => {
         calculateEstimatedPdfSize();
     }, [images, quality]);
 
-    const generatePDF = () => {
+    const generatePDF = async () => {
         const doc = new jsPDF();
         let qualitySetting;
 
         switch (quality) {
             case 'low':
-                qualitySetting = 0.1;
+                qualitySetting = 0.3;
                 break;
             case 'medium':
-                qualitySetting = 0.5;
+                qualitySetting = 0.6;
                 break;
             case 'high':
                 qualitySetting = 1.0;
                 break;
             default:
-                qualitySetting = 0.5;
+                qualitySetting = 0.6;
         }
 
-        images.forEach((image, index) => {
+        for (const [index, image] of images.entries()) {
+            const resizedImage = await resizeImage(image.data, qualitySetting);
             if (index > 0) {
                 doc.addPage();
             }
             doc.text(image.name, 10, 10);
             doc.addImage(
-                image.data,
+                resizedImage,
                 image.data.startsWith('data:image/jpeg') ? 'JPEG' : 'PNG',
-                10, 20, 180, 160, undefined, undefined, qualitySetting
+                10, 20, 180, 160
             );
-        });
+        }
         doc.save('converted_images.pdf');
     };
 
