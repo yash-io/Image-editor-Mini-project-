@@ -74,7 +74,7 @@ const QR_GEN = () => {
         <button
           onClick={() => {
             setIsGenerating(true);
-            setQrResult(''); // Clear QR result when switching modes
+            setQrResult(''); // Clear QR result when switching modes qr
           }}
           className={`p-2 mx-2 ${isGenerating ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
         >
