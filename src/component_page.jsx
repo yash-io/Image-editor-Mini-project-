@@ -78,7 +78,7 @@ const Component_pdf = () => {
                 canvas.width = img.width * qualitySetting;
                 canvas.height = img.height * qualitySetting;
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                resolve(canvas.toDataURL());
+                resolve(canvas.toDataURL('image/jpeg', qualitySetting));
             };
         });
     };
