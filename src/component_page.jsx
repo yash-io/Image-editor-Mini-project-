@@ -95,9 +95,6 @@ const Component_pdf = () => {
             case 'medium':
                 qualityMultiplier = 0.5;
                 break;
-            case 'high':
-                qualityMultiplier = 1.0;
-                break;
             default:
                 qualityMultiplier = 0.5;
         }
@@ -119,9 +116,6 @@ const Component_pdf = () => {
                 break;
             case 'medium':
                 qualitySetting = 0.6;
-                break;
-            case 'high':
-                qualitySetting = 1.0;
                 break;
             default:
                 qualitySetting = 0.6;
@@ -175,7 +169,6 @@ const Component_pdf = () => {
                     >
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
-                        <option value="high">High</option>
                     </select>
                 </div>
                 {images.length === 0 ? (
