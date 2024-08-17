@@ -88,7 +88,7 @@ const Component_pdf = () => {
             doc.addPage();
         }
         doc.text(image.name, 10, 10);
-        doc.addImage(image.data, 'JPEG', 10, 20, 180, 160, undefined, 'FAST', qualitySetting);
+        doc.addImage(image.data, 'JPEG', 10, 20, 180, 160, undefined, undefined, qualitySetting);
     });
     doc.save('converted_images.pdf');
 };
