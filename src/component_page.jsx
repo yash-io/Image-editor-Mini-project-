@@ -69,22 +69,22 @@ const Component_pdf = () => {
     };
 
     const resizeImage = (dataURL, qualitySetting) => {
-    return new Promise((resolve) => {
-        const img = new Image();
-        img.src = dataURL;
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            // Adjust canvas size based on quality setting
-            canvas.width = img.width * qualitySetting;
-            canvas.height = img.height * qualitySetting;
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            // Use a lower quality setting for JPEG compression
-            const compressedDataURL = canvas.toDataURL('image/jpeg', qualitySetting);
-            resolve(compressedDataURL);
-        };
-    });
-};
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.src = dataURL;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                // Adjust canvas size based on quality setting
+                canvas.width = img.width * qualitySetting;
+                canvas.height = img.height * qualitySetting;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                // Use a lower quality setting for JPEG compression
+                const compressedDataURL = canvas.toDataURL('image/jpeg', qualitySetting);
+                resolve(compressedDataURL);
+            };
+        });
+    };
 
     const calculateEstimatedPdfSize = () => {
         let qualityMultiplier;
@@ -110,36 +110,40 @@ const Component_pdf = () => {
     }, [images, quality]);
 
     const generatePDF = async () => {
-        const doc = new jsPDF();
-        let qualitySetting;
+        try {
+            const doc = new jsPDF();
+            let qualitySetting;
 
-        switch (quality) {
-            case 'low':
-                qualitySetting = 0.3;
-                break;
-            case 'medium':
-                qualitySetting = 0.6;
-                break;
-            case 'original':
-                qualitySetting = 1; // No compression
-                break;
-            default:
-                qualitySetting = 0.6;
-        }
-
-        for (const [index, image] of images.entries()) {
-            const resizedImage = quality === 'original' ? image.data : await resizeImage(image.data, qualitySetting);
-            if (index > 0) {
-                doc.addPage();
+            switch (quality) {
+                case 'low':
+                    qualitySetting = 0.3;
+                    break;
+                case 'medium':
+                    qualitySetting = 0.6;
+                    break;
+                case 'original':
+                    qualitySetting = 1; // No compression
+                    break;
+                default:
+                    qualitySetting = 0.6;
             }
-            doc.text(image.name, 10, 10);
-            doc.addImage(
-                resizedImage,
-                image.data.startsWith('data:image/jpeg') ? 'JPEG' : 'PNG',
-                10, 20, 180, 160
-            );
+
+            for (const [index, image] of images.entries()) {
+                const resizedImage = quality === 'original' ? image.data : await resizeImage(image.data, qualitySetting);
+                if (index > 0) {
+                    doc.addPage();
+                }
+                doc.text(image.name, 10, 10);
+
+                // Determine the image format dynamically
+                const format = image.data.substring(5, image.data.indexOf(';')).split('/')[1].toUpperCase();
+                doc.addImage(resizedImage, format, 10, 20, 180, 160);
+            }
+            doc.save('converted_images.pdf');
+        } catch (error) {
+            console.error("Error generating PDF:", error);
+            alert("There was an error generating the PDF. Please try again.");
         }
-        doc.save('converted_images.pdf');
     };
 
     const refresh = () => {
