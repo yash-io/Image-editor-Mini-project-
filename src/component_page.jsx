@@ -114,7 +114,11 @@ const Component_pdf = () => {
                 doc.addPage();
             }
             doc.text(image.name, 10, 10);
-            doc.addImage(image.data, 'JPEG', 10, 20, 180, 160, undefined, undefined, qualitySetting);
+            doc.addImage(
+                image.data,
+                image.data.startsWith('data:image/jpeg') ? 'JPEG' : 'PNG',
+                10, 20, 180, 160, undefined, undefined, qualitySetting
+            );
         });
         doc.save('converted_images.pdf');
     };
