@@ -95,6 +95,9 @@ const Component_pdf = () => {
             case 'medium':
                 qualityMultiplier = 0.5;
                 break;
+            case 'original':
+                qualityMultiplier = 1;
+                break;
             default:
                 qualityMultiplier = 0.5;
         }
@@ -117,12 +120,15 @@ const Component_pdf = () => {
             case 'medium':
                 qualitySetting = 0.6;
                 break;
+            case 'original':
+                qualitySetting = 1; // No compression
+                break;
             default:
                 qualitySetting = 0.6;
         }
 
         for (const [index, image] of images.entries()) {
-            const resizedImage = await resizeImage(image.data, qualitySetting);
+            const resizedImage = quality === 'original' ? image.data : await resizeImage(image.data, qualitySetting);
             if (index > 0) {
                 doc.addPage();
             }
@@ -169,6 +175,7 @@ const Component_pdf = () => {
                     >
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
+                        <option value="original">Original</option>
                     </select>
                 </div>
                 {images.length === 0 ? (
