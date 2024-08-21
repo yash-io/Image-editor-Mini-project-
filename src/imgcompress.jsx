@@ -1,24 +1,31 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-
 const Img_compress = () => {
   const [previewImageUrl, setPreviewImageUrl] = useState(null);
   const [downloadUrl, setDownloadUrl] = useState(null);
   const [originalImageSize, setOriginalImageSize] = useState(null);
   const [compressedImageSize, setCompressedImageSize] = useState(null);
-  const [resolutionWidth, setResolutionWidth] = useState(800);
-  const [resolutionHeight, setResolutionHeight] = useState(600);
+  const [resolutionWidth, setResolutionWidth] = useState(null);
+  const [resolutionHeight, setResolutionHeight] = useState(null);
   const [brightnessValue, setBrightnessValue] = useState(100);
   const [saturationValue, setSaturationValue] = useState(100);
   const [hueRotateValue, setHueRotateValue] = useState(0);
   const [grayscaleActive, setGrayscaleActive] = useState(false);
   const [qualityLevel, setQualityLevel] = useState('high');
   const previewImageRef = useRef(null);
+  const [fileInputKey, setFileInputKey] = useState(Date.now());
 
   const previewImage = (event) => {
     const file = event.target.files[0];
     setPreviewImageUrl(URL.createObjectURL(file));
     setOriginalImageSize((file.size / 1024).toFixed(2)); // Convert bytes to KB
+
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = () => {
+      setResolutionWidth(img.width);
+      setResolutionHeight(img.height);
+    };
   };
 
   const applyEffects = () => {
@@ -71,15 +78,17 @@ const Img_compress = () => {
   useEffect(() => {
     applyEffects();
   }, [brightnessValue, saturationValue, hueRotateValue, grayscaleActive]);
-  const common="text-sm font-semibold";
-  const hover_ ="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+
+  const common = "text-sm font-semibold";
+  const hover_ = "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500";
+
   return (
     <div className="border-t-0 border-2 rounded-md border-blue-700  p-8 bg-gray-200 min-h-screen">
       <h1 className="text-3xl font-bold mb-4">Image Compressor</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="mb-4">
           <label htmlFor="imageInput" className={common}>Choose Image</label>
-          <input type="file" id="imageInput" onChange={previewImage} accept="image/*" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-4 focus:ring-blue-500" />
+          <input type="file" id="imageInput" onChange={previewImage} accept="image/*" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-4 focus:ring-blue-500" key={fileInputKey} />
         </div>
         
         <div className="mb-4">
