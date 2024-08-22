@@ -14,7 +14,7 @@ const More_tools = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center p-4 bg-gray-100">
+    <div className="min-h-screen w-full flex flex-col items-center p-4 bg-gray-100">
       {!selectedTool && (
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <button 
