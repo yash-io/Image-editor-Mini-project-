@@ -14,7 +14,7 @@ const More_tools = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center p-4 bg-black">
+    <div className="min-h-screen w-full flex flex-col items-center p-4 bg-gray-800">
       {selectedTool && (
         <div className="w-full flex flex-col items-center">
           <button
