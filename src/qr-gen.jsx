@@ -52,7 +52,7 @@ const QR_GEN = () => {
         scannerRef.current.render(
           (decodedText) => {
             setQrResult(decodedText);
-            setIsGenerating(true); // Stop scanning after successful scan
+            // No automatic state change here
           },
           (error) => {
             console.warn("QR Code scanning failed. Reason: ", error);
@@ -68,13 +68,13 @@ const QR_GEN = () => {
   }, [isGenerating]);
 
   return (
-    <div className="bg-gray-600 min-h-screen flex flex-col items-center p-4">
+    <div className="bg-gray-900 min-h-screen flex flex-col items-center p-4">
       <h1 className="text-white text-4xl mb-6 animate-pulse">QR-CODE GENERATOR AND SCANNER</h1>
       <div className="flex justify-center mb-4">
         <button
           onClick={() => {
             setIsGenerating(true);
-            setQrResult(''); // Clear QR result when switching modes qr
+            setQrResult(''); // Clear QR result when switching modes
           }}
           className={`p-2 mx-2 ${isGenerating ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
         >
@@ -93,7 +93,7 @@ const QR_GEN = () => {
       {isGenerating ? (
         <div className="flex flex-col items-center">
           <form onSubmit={handleSubmit} className="w-full max-w-md">
-            <h2 className="text-white text-xl mb-4">ENTER YOUR TEXT HERE:</h2>
+            <h2 className="text-white text-xl mb-4">Enter Your Text Here:</h2>
             <input
               type="text"
               name="link-data"
@@ -108,12 +108,12 @@ const QR_GEN = () => {
               type="submit"
               className="w-full p-2 bg-green-600 text-white rounded hover:bg-green-500"
             >
-              GENERATE QR CODE
+              Generate QR Code
             </button>
           </form>
           <div id="displayqr" className="mt-4">
             {generatedQR && (
-              <div className="mt-4 p-4 bg-white rounded-lg">
+              <div className="mt-4 p-4 bg-white rounded-lg shadow-lg">
                 <QRCode
                   id="qrCode"
                   value={generatedQR}
@@ -135,8 +135,8 @@ const QR_GEN = () => {
       ) : (
         <div className="w-full max-w-md">
           <h2 className="text-white text-xl mb-4">QR Code Scanner</h2>
-          <div id="qr-reader" style={{ width: '100%' }}></div>
-          <p className="mt-2 text-white">QR Code Result: {qrResult}</p>
+          <div id="qr-reader" className="bg-white p-4 rounded shadow-lg" style={{ width: '100%' }}></div>
+          <p className="mt-2 text-white">QR Code Result: <span className="font-bold text-yellow-400">{qrResult}</span></p>
         </div>
       )}
     </div>
