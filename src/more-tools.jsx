@@ -15,6 +15,18 @@ const More_tools = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center p-4 bg-black">
+      {selectedTool && (
+        <div className="w-full flex flex-col items-center">
+          {selectedTool === "QR" && <QR_GEN />}
+          {selectedTool === "OCR" && <ImageTextExtractor />}
+          <button
+            onClick={resetTools}
+            className="mt-4 w-full sm:w-auto px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition duration-200"
+          >
+            More Tools
+          </button>
+        </div>
+      )}
       {!selectedTool && (
         <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full">
           <button 
@@ -32,18 +44,7 @@ const More_tools = () => {
         </div>
       )}
 
-      {selectedTool && (
-        <div className="w-full flex flex-col items-center">
-          {selectedTool === "QR" && <QR_GEN />}
-          {selectedTool === "OCR" && <ImageTextExtractor />}
-          <button
-            onClick={resetTools}
-            className="mt-4 w-full sm:w-auto px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition duration-200"
-          >
-            More Tools
-          </button>
-        </div>
-      )}
+      
     </div>
   );
 };
