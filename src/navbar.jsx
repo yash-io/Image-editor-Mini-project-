@@ -8,7 +8,7 @@ const Navbar = ({ isMenuOpen, toggleMenu, toggle_cmp , toggle_bg ,toggleHome,tog
   return (
     <div className="bg-black  sticky top-0 rounded-md  w-full z-50 shadow-lg">
       <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <div className="text-2xl font-bold text-white" onClick={toggle_bg}>IMAGE TOOL KIT</div>
+        <div className="text-2xl font-bold text-white" onClick={toggleHome}>IMAGE TOOL KIT</div>
         <button
           className="block sm:hidden bg-blue-600 text-white px-3 py-2 rounded-md transition duration-300 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           onClick={toggleMenu}
